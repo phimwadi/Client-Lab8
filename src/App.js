@@ -1,7 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import './App.css';
 import {firestore} from './index'
-
 function App() {
   const [tasks,setTasks] = useState([
     { 
@@ -11,16 +10,22 @@ function App() {
       id:2, name: "write node"
     }
   ])
-
   useEffect( () => {
     retriveData()
   },[])
 
   const retriveData = () => {
     firestore.collection("tasks").onSnapshot( (snapshot) => {
-      console.log(snapshot)
+      console.log(snapshot.docs)
+      let myTask = snapshot.docs.map( d =>{
+        const { id , name } = d.data()
+        console.log(id,name)
+        return {id,name}
+      })
+      setTasks(myTask)
     } )
   }
+
   const renderTask = () => {
     if (tasks && tasks.length)
       return tasks.map((task,index)=>{
