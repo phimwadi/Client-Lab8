@@ -3,9 +3,7 @@ import './App.css';
 import {firestore} from './index'
 function App() {
   const [tasks,setTasks] = useState([])
-
   const [ name,setName ] = useState([
-
   ])
   useEffect( () => {
     retriveData()
@@ -21,9 +19,12 @@ function App() {
       setTasks(myTask)
     } )
   }
-
   const deleteTask = (id) => {
     firestore.collection("tasks").doc(id+'').delete()
+  }
+
+  const editTask = (id) => {
+    firestore.collection("tasks").doc(id+'').set({id,name})
   }
 
   const renderTask = () => {
@@ -33,18 +34,17 @@ function App() {
             <li key={index}> 
             {task.id} : {task.name}
             <button onClick={() => deleteTask(task.id)}>Delete</button>
+            <button onClick={() => editTask(task.id)}>Edit</button>
             </li>
           )
         })
     else
         return (<li>No task</li>)
   }
-
   const addTask = () => {
     let id = ( tasks.length ===0)?1:tasks[tasks.length-1].id+1
     firestore.collection("tasks").doc(id+'').set({id,name})
   }
-
   return (
     <div >
         <h1>Todo</h1>
